@@ -33,7 +33,7 @@ docker run -itd --name cgit -p 8787:80 -v $PWD/repos:/srv/git/ ghcr.io/mmdjiji/c
 **Dockerfile**
 
 ```Dockerfile
-FROM docker.cnb.cool/mmdjiji/cgit:latest
+FROM ghcr.io/mmdjiji/cgit:latest
 ```
 
 ## Key container paths
