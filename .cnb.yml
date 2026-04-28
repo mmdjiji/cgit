@@ -1,0 +1,10 @@
+$:
+  vscode:
+    - docker:
+        image: docker.cnb.cool/ainb/images/default-dev-env
+      services:
+        - vscode
+        - docker
+      stages:
+        - name: ls
+          script: ls -al
