@@ -27,7 +27,7 @@ The hyperfast web frontend for [Git](https://git-scm.com/) repositories on top o
 ## Usage
 
 ```sh
-docker run -itd --name cgit -p 8787:80 -v $PWD/repos:/srv/git/ docker.cnb.cool/mmdjiji/cgit:latest
+docker run -itd --name cgit -p 8787:80 -v $PWD/repos:/srv/git/ ghcr.io/mmdjiji/cgit:latest
 ```
 
 **Dockerfile**
