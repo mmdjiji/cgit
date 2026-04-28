@@ -1,10 +1,8 @@
 # CGit
 
-> The hyperfast web frontend for [Git](https://git-scm.com/) repositories on top of [Alpine](https://alpinelinux.org/) and [Nginx](https://nginx.org/).
+> This project is a fork of [alpine-cgit](https://github.com/joseluisq/alpine-cgit) and will be independently maintained going forward. The primary repository is hosted at [cnb.cool/mmdjiji/cgit](https://cnb.cool/mmdjiji/cgit) — please submit all issues and pull requests there. The GitHub repository is a read-only mirror.
 
-[CGit](https://git.zx2c4.com/cgit/about/) is a web interface ([cgi](https://tools.ietf.org/html/rfc3875)) for [Git](https://git-scm.com/) repositories, written in C.
-
-This project is a fork of [alpine-cgit](https://github.com/joseluisq/alpine-cgit) and will be independently maintained going forward. The primary repository is hosted at [cnb.cool/mmdjiji/cgit](https://cnb.cool/mmdjiji/cgit) — please submit all issues and pull requests there. The GitHub repository is a read-only mirror.
+The hyperfast web frontend for [Git](https://git-scm.com/) repositories on top of [Alpine](https://alpinelinux.org/) and [Nginx](https://nginx.org/). [CGit](https://git.zx2c4.com/cgit/about/) is a web interface ([cgi](https://tools.ietf.org/html/rfc3875)) for [Git](https://git-scm.com/) repositories, written in C.
 
 <img src="./cgit.png" width="600">
 
