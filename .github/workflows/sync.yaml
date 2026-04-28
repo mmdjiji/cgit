@@ -12,7 +12,7 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v4
         with:
-          ref: automation
+          ref: main
       - name: Sync External Repo to Main
         run: |
           git config --global user.name "github-actions[bot]"
