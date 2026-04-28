@@ -10,7 +10,7 @@ main:
           script: |
             docker buildx build --no-cache \
               -t ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest \
-              --platform=linux/amd64,linux/arm64/v8,linux/arm/v7,linux/386,linux/arm/v5,linux/ppc64le,linux/s390x \
+              --platform=linux/amd64,linux/arm64/v8,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x \
               . --push
 
 $:
