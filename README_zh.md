@@ -22,8 +22,7 @@
 - 识别 Git 配置中的 `gitweb.owner`
 - 支持脚本或内置 Lua 解释器的过滤框架
 - 支持 HTTP Basic Auth 鉴权
-
-更多详情请参阅 [CGit 项目主页](https://git.zx2c4.com/cgit/about/)。
+- 支持 LFS 在线预览
 
 ## 快速开始
 

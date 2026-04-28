@@ -22,8 +22,7 @@ The hyperfast web frontend for [Git](https://git-scm.com/) repositories on top o
 - Understands `gitweb.owner` in Git config files.
 - Has an extensive filtering framework using scripts or a built-in Lua interpreter.
 - Optional HTTP Basic Auth support.
-
-See [CGit project](https://git.zx2c4.com/cgit/about/) for more details.
+- Git LFS online preview support.
 
 ## Usage
 
