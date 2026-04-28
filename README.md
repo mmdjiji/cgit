@@ -60,7 +60,7 @@ CGit Docker image can be configured via environment variables. This is the defau
 
 ## Settings via custom configuration file
 
-By default, this Docker image will use a template file located at [cgit/cgit.conf](./cgit/cgit.conf) which is replaced with the env settings (mentioned above) at start-up time.
+By default, this Docker image will use a template file located at [cgit.conf](./cgit.conf) which is replaced with the env settings (mentioned above) at start-up time.
 
 However, if you want to use a custom `/etc/cgitrc` file then follow these steps:
 
