@@ -11,6 +11,10 @@ if [ "$1" = "nginx" ] || [ "${1#-}" != "$1" ]; then
     chown nginx:nginx /var/cache/cgit
     chmod u+g /var/cache/cgit
 
+    git config --system --add safe.directory '*'
+
+    export HOME=/tmp
+
     # Replace environment variables only if `USE_CUSTOM_CONFIG` is not defined or equal to `false`
     if [[ -z "$USE_CUSTOM_CONFIG" ]] || [[ "$USE_CUSTOM_CONFIG" = "false" ]]; then
         envsubst < /tmp/cgitrc.tmpl > /etc/cgitrc

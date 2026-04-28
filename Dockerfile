@@ -54,6 +54,7 @@ RUN set -eux \
         ca-certificates \
         fcgiwrap \
         git \
+        git-daemon \
         lua5.3-libs \
         mailcap \
         py3-markdown \
