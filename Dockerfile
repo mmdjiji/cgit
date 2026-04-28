@@ -55,6 +55,7 @@ RUN set -eux \
         fcgiwrap \
         git \
         lua5.3-libs \
+        mailcap \
         py3-markdown \
         py3-pygments \
         py3-docutils \

@@ -1,6 +1,6 @@
 services:
   cgit:
-    image: docker.cnb.cool/mmdjiji/cgit:latest
+    image: cgit-test
     container_name: cgit
     restart: unless-stopped
     ports:

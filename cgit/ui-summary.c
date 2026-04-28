@@ -106,9 +106,35 @@ void cgit_print_repo_readme(const char *path)
 
 	mimetype = get_mimetype_for_filename(path);
 	if (mimetype && (!strncmp(mimetype, "image/", 6) || !strncmp(mimetype, "video/", 6))) {
-		ctx.page.mimetype = mimetype;
-		ctx.page.charset = NULL;
-		cgit_print_plain();
+		const char *accept = getenv("HTTP_ACCEPT");
+		int wants_html = accept && strstr(accept, "text/html");
+
+		if (!wants_html) {
+			ctx.page.mimetype = mimetype;
+			ctx.page.charset = NULL;
+			cgit_print_plain();
+			free(mimetype);
+			return;
+		}
+
+		char *url = cgit_fileurl(ctx.repo->url, "plain",
+					ctx.qry.path, NULL);
+		cgit_print_layout_start();
+		html("<div id='summary'>");
+		if (!strncmp(mimetype, "image/", 6)) {
+			html("<img src='");
+			html_attr(url);
+			html("' alt='");
+			html_attr(ctx.qry.path);
+			html("' style='max-width:100%' />");
+		} else {
+			html("<video src='");
+			html_attr(url);
+			html("' controls></video>");
+		}
+		html("</div>");
+		cgit_print_layout_end();
+		free(url);
 		free(mimetype);
 		return;
 	}
