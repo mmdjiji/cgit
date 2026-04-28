@@ -27,16 +27,17 @@ See [CGit project](https://git.zx2c4.com/cgit/about/) for more details.
 ## Usage
 
 ```sh
-docker run --rm -it \
+docker run -itd \
+    --name cgit \
     -p 8787:80 \
-    -v /my/repos/:/srv/git/ \
-        joseluisq/alpine-cgit:2
+    -v $PWD/repos:/srv/git/ \
+        docker.cnb.cool/mmdjiji/cgit:latest
 ```
 
 **Dockerfile**
 
 ```Dockerfile
-FROM joseluisq/alpine-cgit:2
+FROM docker.cnb.cool/mmdjiji/cgit:latest
 ```
 
 ## Key container paths

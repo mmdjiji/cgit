@@ -1,0 +1,9 @@
+services:
+  cgit:
+    image: docker.cnb.cool/mmdjiji/cgit:latest
+    container_name: cgit
+    restart: unless-stopped
+    ports:
+      - "8787:80"
+    volumes:
+      - ./repos:/srv/git/
