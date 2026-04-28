@@ -1,7 +1,7 @@
 services:
   cgit:
     container_name: cgit
-    image: cgit-test
+    image: docker.cnb.cool/mmdjiji/cgit:latest
     restart: unless-stopped
     ports:
       - 8787:80
