@@ -1,3 +1,18 @@
+main:
+  push:
+    - services:
+        - name: docker
+          options:
+            rootlessBuildkitd: 
+              enabled: true
+      stages:
+        - name: Docker build and push
+          script: |
+            docker buildx build --no-cache \
+              -t ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest \
+              --platform=linux/arm64,linux/amd64 \
+              . --push
+
 $:
   vscode:
     - docker:

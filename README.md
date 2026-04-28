@@ -75,10 +75,11 @@ See [`cgitrc` man page](https://linux.die.net/man/5/cgitrc) for more detailed in
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in current work by you, as defined in the Apache-2.0 license, shall be dual licensed as described below, without any additional terms or conditions.
 
-Feel free to send some [Pull request](https://github.com/joseluisq/alpine-cgit/pulls) or file an [issue](https://github.com/joseluisq/alpine-cgit/issues).
+Feel free to send some [Pull request](https://cnb.cool/mmdjiji/cgit/-/pulls) or file an [issue](https://cnb.cool/mmdjiji/cgit/-/issues).
 
 ## License
 
 This work is primarily distributed under the terms of both the [MIT license](LICENSE-MIT) and the [Apache License (Version 2.0)](LICENSE-APACHE).
 
-© 2021-present [Jose Quintana](https://joseluisq.net)
+© 2021-2026 [Jose Quintana](https://joseluisq.net)
+© 2026-present [JiJi](https://mmdjiji.com)
