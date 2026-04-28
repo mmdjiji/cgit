@@ -12,6 +12,7 @@
 #include "ui-tree.h"
 #include "html.h"
 #include "ui-shared.h"
+#include "ui-lfs.h"
 
 struct walk_tree_context {
 	char *curr_rev;
@@ -86,12 +87,54 @@ static void print_binary_buffer(char *buf, unsigned long size)
 	html("</table>\n");
 }
 
+static int is_image_ext(const char *ext)
+{
+	return !strcasecmp(ext, ".png") || !strcasecmp(ext, ".jpg") ||
+	       !strcasecmp(ext, ".jpeg") || !strcasecmp(ext, ".gif") ||
+	       !strcasecmp(ext, ".svg") || !strcasecmp(ext, ".webp") ||
+	       !strcasecmp(ext, ".ico") || !strcasecmp(ext, ".bmp");
+}
+
+static int is_pdf_ext(const char *ext)
+{
+	return !strcasecmp(ext, ".pdf");
+}
+
+static void print_lfs_object(const char *lfs_oid, const char *path, const char *rev)
+{
+	const char *ext = strrchr(path, '.');
+
+	html("<table summary='blob content' class='blob'>\n");
+	html("<tr><td>");
+
+	if (ext && is_image_ext(ext)) {
+		html("<img src='");
+		html_attr(cgit_fileurl(ctx.qry.repo, "plain", path,
+				       fmt("h=%s", rev)));
+		html("' style='max-width:100%' />");
+	} else if (ext && is_pdf_ext(ext)) {
+		html("<iframe src='");
+		html_attr(cgit_fileurl(ctx.qry.repo, "plain", path,
+				       fmt("h=%s", rev)));
+		html("' style='width:100%;height:80vh;border:none'></iframe>");
+	} else {
+		html("<div style='padding:1em'>LFS file (");
+		cgit_plain_link("download", NULL, NULL, ctx.qry.head,
+				rev, path);
+		html(")</div>");
+	}
+
+	html("</td></tr></table>\n");
+}
+
 static void print_object(const struct object_id *oid, const char *path, const char *basename, const char *rev)
 {
 	enum object_type type;
 	char *buf;
 	unsigned long size;
 	bool is_binary;
+	char lfs_oid[65];
+	unsigned long lfs_size;
 
 	type = odb_read_object_info(the_repository->objects, oid, &size);
 	if (type == OBJ_BAD) {
@@ -106,6 +149,21 @@ static void print_object(const struct object_id *oid, const char *path, const ch
 			"Error reading object %s", oid_to_hex(oid));
 		return;
 	}
+
+	/* Check for LFS pointer and render inline if applicable */
+	if (cgit_lfs_parse_pointer(buf, size, lfs_oid, &lfs_size) &&
+	    cgit_lfs_object_path(lfs_oid)) {
+		cgit_set_title_from_path(path);
+		cgit_print_layout_start();
+		htmlf("blob: %s (", oid_to_hex(oid));
+		cgit_plain_link("plain", NULL, NULL, ctx.qry.head,
+				rev, path);
+		html(") (LFS)\n");
+		print_lfs_object(lfs_oid, path, rev);
+		free(buf);
+		return;
+	}
+
 	is_binary = buffer_is_binary(buf, size);
 
 	cgit_set_title_from_path(path);
@@ -200,6 +258,21 @@ static void write_tree_link(const struct object_id *oid, char *name,
 	strbuf_setlen(fullpath, initial_length);
 }
 
+static const char *format_lfs_size(unsigned long size)
+{
+	static char buf[32];
+
+	if (size >= 1024 * 1024 * 1024)
+		snprintf(buf, sizeof(buf), "%.1f GiB", size / (1024.0 * 1024 * 1024));
+	else if (size >= 1024 * 1024)
+		snprintf(buf, sizeof(buf), "%.1f MiB", size / (1024.0 * 1024));
+	else if (size >= 1024)
+		snprintf(buf, sizeof(buf), "%.1f KiB", size / 1024.0);
+	else
+		snprintf(buf, sizeof(buf), "%lu B", size);
+	return buf;
+}
+
 static int ls_item(const struct object_id *oid, struct strbuf *base,
 		const char *pathname, unsigned mode, void *cbdata)
 {
@@ -241,6 +314,28 @@ static int ls_item(const struct object_id *oid, struct strbuf *base,
 			strbuf_addf(&class, " %s", ext + 1);
 		cgit_tree_link(name, NULL, class.buf, ctx.qry.head,
 			       walk_tree_ctx->curr_rev, fullpath.buf);
+
+		/* Show LFS badge with actual file size if this is an LFS pointer */
+		if (S_ISREG(mode) && size <= 1024 && size >= 50) {
+			char *blob = odb_read_object(the_repository->objects,
+						     oid, &type, &size);
+			if (blob) {
+				char lfs_oid[65];
+				unsigned long lfs_size;
+				if (cgit_lfs_parse_pointer(blob, size, lfs_oid, &lfs_size)) {
+					char *lfs_path = cgit_lfs_object_path(lfs_oid);
+					htmlf(" <span class='lfs-badge'>"
+					      "LFS <span class='lfs-sep'></span>"
+					      "%s</span>",
+					      format_lfs_size(lfs_size));
+					if (lfs_path) {
+						size = lfs_size;
+						free(lfs_path);
+					}
+				}
+				free(blob);
+			}
+		}
 	}
 	if (S_ISLNK(mode)) {
 		html(" -> ");

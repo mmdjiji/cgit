@@ -41,7 +41,7 @@ static const char *json_get_string(const char *json, const char *key,
 				   char *buf, size_t buflen)
 {
 	char needle[256];
-	const char *p, *start;
+	const char *p;
 	size_t i;
 
 	snprintf(needle, sizeof(needle), "\"%s\"", key);
@@ -58,7 +58,6 @@ static const char *json_get_string(const char *json, const char *key,
 		return NULL;
 	p++; /* skip opening quote */
 
-	start = p;
 	for (i = 0; *p && *p != '"' && i < buflen - 1; p++, i++)
 		buf[i] = *p;
 	buf[i] = '\0';
@@ -103,6 +102,63 @@ static char *lfs_object_path(const char *oid)
 	strbuf_addstr(&path, oid);
 
 	return strbuf_detach(&path, NULL);
+}
+
+/*
+ * Parse an LFS pointer from a git blob buffer.
+ * LFS pointer format:
+ *   version https://git-lfs.github.com/spec/v1
+ *   oid sha256:<64-hex-chars>
+ *   size <number>
+ */
+int cgit_lfs_parse_pointer(const char *buf, unsigned long size,
+			   char *oid_out, unsigned long *size_out)
+{
+	const char *p, *end;
+
+	/* LFS pointers are small text files, typically < 200 bytes */
+	if (!buf || size > 1024 || size < 50)
+		return 0;
+
+	/* Must start with the version line */
+	if (strncmp(buf, "version https://git-lfs.github.com/spec/v1", 42))
+		return 0;
+
+	/* Find oid line */
+	p = strstr(buf, "oid sha256:");
+	if (!p)
+		return 0;
+	p += 11; /* skip "oid sha256:" */
+
+	if (!is_valid_lfs_oid(p, OID_HEX_LEN))
+		return 0;
+	memcpy(oid_out, p, OID_HEX_LEN);
+	oid_out[OID_HEX_LEN] = '\0';
+
+	/* Find size line */
+	end = strstr(buf, "\nsize ");
+	if (!end)
+		return 0;
+	end += 6; /* skip "\nsize " */
+	*size_out = strtoul(end, NULL, 10);
+
+	return 1;
+}
+
+/*
+ * Build the filesystem path for an LFS object and check if it exists.
+ * Returns a malloc'd path, or NULL if the object doesn't exist.
+ */
+char *cgit_lfs_object_path(const char *oid)
+{
+	struct stat st;
+	char *path = lfs_object_path(oid);
+
+	if (stat(path, &st)) {
+		free(path);
+		return NULL;
+	}
+	return path;
 }
 
 /*
@@ -279,25 +335,24 @@ static void handle_lfs_batch(void)
 static void handle_lfs_download(const char *oid)
 {
 	char *file_path;
-	struct stat st;
 
 	if (!is_valid_lfs_oid(oid, strlen(oid))) {
 		lfs_send_error(400, "Bad Request", "Invalid OID format");
 		return;
 	}
 
-	file_path = lfs_object_path(oid);
-
-	if (stat(file_path, &st)) {
-		free(file_path);
+	file_path = cgit_lfs_object_path(oid);
+	if (!file_path) {
 		lfs_send_error(404, "Not Found", "Object not found");
 		return;
 	}
 
 	ctx.page.mimetype = "application/octet-stream";
-	ctx.page.size = st.st_size;
+	ctx.page.charset = NULL;
+	ctx.page.size = 0;
+	htmlf("X-Accel-Redirect: /.lfs-internal/%s/lfs/objects/%.2s/%.2s/%s\n",
+	      ctx.qry.repo, oid, oid + 2, oid);
 	cgit_print_http_headers();
-	html_include(file_path);
 
 	free(file_path);
 }

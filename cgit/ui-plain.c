@@ -12,6 +12,7 @@
 #include "ui-plain.h"
 #include "html.h"
 #include "ui-shared.h"
+#include "ui-lfs.h"
 
 struct walk_tree_context {
 	int match_baselen;
@@ -23,6 +24,8 @@ static int print_object(const struct object_id *oid, const char *path)
 	enum object_type type;
 	char *buf, *mimetype;
 	unsigned long size;
+	char lfs_oid[65];
+	unsigned long lfs_size;
 
 	type = odb_read_object_info(the_repository->objects, oid, &size);
 	if (type == OBJ_BAD) {
@@ -34,6 +37,33 @@ static int print_object(const struct object_id *oid, const char *path)
 	if (!buf) {
 		cgit_print_error_page(404, "Not found", "Not found");
 		return 0;
+	}
+
+	/* If this is an LFS pointer, serve the actual LFS object instead */
+	if (cgit_lfs_parse_pointer(buf, size, lfs_oid, &lfs_size)) {
+		char *lfs_path = cgit_lfs_object_path(lfs_oid);
+		if (lfs_path) {
+			free(buf);
+
+			mimetype = get_mimetype_for_filename(path);
+			ctx.page.mimetype = mimetype;
+			ctx.page.charset = NULL;
+
+			if (!ctx.page.mimetype)
+				ctx.page.mimetype = "application/octet-stream";
+			ctx.page.filename = path;
+			ctx.page.size = 0;
+			ctx.page.etag = lfs_oid;
+			/* Use X-Accel-Redirect to let nginx serve the file
+			 * directly, freeing up the FastCGI worker immediately */
+			htmlf("X-Accel-Redirect: /.lfs-internal/%s/lfs/objects/%.2s/%.2s/%s\n",
+			      ctx.qry.repo, lfs_oid, lfs_oid + 2, lfs_oid);
+			cgit_print_http_headers();
+
+			free(mimetype);
+			free(lfs_path);
+			return 1;
+		}
 	}
 
 	mimetype = get_mimetype_for_filename(path);

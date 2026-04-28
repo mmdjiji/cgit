@@ -295,6 +295,29 @@ div#cgit td.ls-mode {
 	width: 10em;
 }
 
+div#cgit .lfs-badge {
+	display: inline-block;
+	margin-left: 0.5em;
+	padding: 0 0.4em;
+	font-size: 0.85em;
+	font-family: monospace;
+	line-height: 1.5;
+	color: #555;
+	background: #f0f0f0;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	vertical-align: middle;
+}
+
+div#cgit .lfs-badge .lfs-sep {
+	display: inline-block;
+	width: 1px;
+	height: 1em;
+	margin: 0 0.4em;
+	background: #bbb;
+	vertical-align: middle;
+}
+
 div#cgit table.blob {
 	margin-top: 0.5em;
 	border-top: solid 1px black;
