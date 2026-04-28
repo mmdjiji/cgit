@@ -15,6 +15,14 @@ if [ "$1" = "nginx" ] || [ "${1#-}" != "$1" ]; then
 
     export HOME=/tmp
 
+    # Basic auth: generate htpasswd and nginx snippet if credentials are set
+    rm -f /etc/nginx/conf.d/auth.inc
+    if [ -n "$BASIC_AUTH_USER" ] && [ -n "$BASIC_AUTH_PASS" ]; then
+        htpasswd -cb /etc/nginx/.htpasswd "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS"
+        printf 'auth_basic "Restricted";\nauth_basic_user_file /etc/nginx/.htpasswd;\n' \
+            > /etc/nginx/conf.d/auth.inc
+    fi
+
     # Replace environment variables only if `USE_CUSTOM_CONFIG` is not defined or equal to `false`
     if [[ -z "$USE_CUSTOM_CONFIG" ]] || [[ "$USE_CUSTOM_CONFIG" = "false" ]]; then
         envsubst < /tmp/cgitrc.tmpl > /etc/cgitrc

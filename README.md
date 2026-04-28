@@ -1,8 +1,10 @@
-# Alpine CGit [![devel](https://github.com/joseluisq/alpine-cgit/actions/workflows/devel.yml/badge.svg)](https://github.com/joseluisq/alpine-cgit/actions/workflows/devel.yml) [![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/joseluisq/alpine-cgit/latest)](https://hub.docker.com/r/joseluisq/alpine-cgit/) [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/joseluisq/alpine-cgit/latest)](https://hub.docker.com/r/joseluisq/alpine-cgit/tags) [![Docker Image](https://img.shields.io/docker/pulls/joseluisq/alpine-cgit.svg)](https://hub.docker.com/r/joseluisq/alpine-cgit/)
+# CGit
 
 > The hyperfast web frontend for [Git](https://git-scm.com/) repositories on top of [Alpine](https://alpinelinux.org/) and [Nginx](https://nginx.org/).
 
 [CGit](https://git.zx2c4.com/cgit/about/) is a web interface ([cgi](https://tools.ietf.org/html/rfc3875)) for [Git](https://git-scm.com/) repositories, written in C.
+
+This project is a fork of [alpine-cgit](https://github.com/joseluisq/alpine-cgit) and will be independently maintained going forward. The primary repository is hosted at [cnb.cool/mmdjiji/cgit](https://cnb.cool/mmdjiji/cgit) — please submit all issues and pull requests there. The GitHub repository is a read-only mirror.
 
 <img src="./cgit.png" width="600">
 
@@ -21,17 +23,14 @@
 - Understands GitWeb project-lists.
 - Understands `gitweb.owner` in Git config files.
 - Has an extensive filtering framework using scripts or a built-in Lua interpreter.
+- Optional HTTP Basic Auth support.
 
 See [CGit project](https://git.zx2c4.com/cgit/about/) for more details.
 
 ## Usage
 
 ```sh
-docker run -itd \
-    --name cgit \
-    -p 8787:80 \
-    -v $PWD/repos:/srv/git/ \
-        docker.cnb.cool/mmdjiji/cgit:latest
+docker run -itd --name cgit -p 8787:80 -v $PWD/repos:/srv/git/ docker.cnb.cool/mmdjiji/cgit:latest
 ```
 
 **Dockerfile**
@@ -58,6 +57,19 @@ CGit Docker image can be configured via environment variables. This is the defau
 - `CGIT_SECTION_FROM_STARTPATH`: How many path elements from each repo path to use as a default section name.
 - `CGIT_MAX_REPO_COUNT`: Number of entries to list per page on the repository index page.
 
+### Basic Authentication
+
+HTTP Basic Auth can be enabled by setting both `BASIC_AUTH_USER` and `BASIC_AUTH_PASS`. If either is unset, authentication is disabled.
+
+- `BASIC_AUTH_USER`: Username for HTTP Basic Auth.
+- `BASIC_AUTH_PASS`: Password for HTTP Basic Auth.
+
+This applies to both the web interface and git clone over HTTP:
+
+```sh
+git clone https://admin:12345678@your-host/repo-name
+```
+
 ## Settings via custom configuration file
 
 By default, this Docker image will use a template file located at [cgit.conf](./cgit.conf) which is replaced with the env settings (mentioned above) at start-up time.
@@ -74,13 +86,13 @@ See [`cgitrc` man page](https://linux.die.net/man/5/cgitrc) for more detailed in
 
 ## Contributions
 
-Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in current work by you, as defined in the Apache-2.0 license, shall be dual licensed as described below, without any additional terms or conditions.
+This project is maintained at [cnb.cool/mmdjiji/cgit](https://cnb.cool/mmdjiji/cgit). The GitHub repository is a read-only mirror. Please submit all [Pull Requests](https://cnb.cool/mmdjiji/cgit/-/pulls) and [Issues](https://cnb.cool/mmdjiji/cgit/-/issues) on CNB.
 
-Feel free to send some [Pull request](https://cnb.cool/mmdjiji/cgit/-/pulls) or file an [issue](https://cnb.cool/mmdjiji/cgit/-/issues).
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in current work by you, as defined in the Apache-2.0 license, shall be dual licensed as described below, without any additional terms or conditions.
 
 ## License
 
 This work is primarily distributed under the terms of both the [MIT license](LICENSE-MIT) and the [Apache License (Version 2.0)](LICENSE-APACHE).
 
-© 2021-2026 [Jose Quintana](https://joseluisq.net)
-© 2026-present [JiJi](https://mmdjiji.com)
+- © 2021-2026 [Jose Quintana](https://joseluisq.net)
+- © 2026-present [JiJi](https://mmdjiji.com)

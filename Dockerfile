@@ -43,14 +43,14 @@ ENV CGIT_SECTION_FROM_STARTPATH=0
 ENV CGIT_MAX_REPO_COUNT=10000
 
 LABEL version="${VERSION}" \
-    description="The hyperfast web frontend for Git repositories on top of Alpine and Nginx." \
-    maintainer="Jose Quintana <joseluisq.net>"
+    description="The hyperfast web frontend for Git repositories"
 
 COPY --from=builder /usr/share/webapps/cgit /usr/share/webapps/cgit
 COPY --from=builder /usr/lib/cgit/filters /usr/lib/cgit/filters
 
 RUN set -eux \
     && apk add --no-cache \
+        apache2-utils \
         ca-certificates \
         fcgiwrap \
         git \

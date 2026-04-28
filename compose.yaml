@@ -1,9 +1,14 @@
 services:
   cgit:
-    image: docker.cnb.cool/mmdjiji/cgit:latest
     container_name: cgit
+    image: cgit-test
     restart: unless-stopped
     ports:
-      - "8787:80"
+      - 8787:80
     volumes:
       - ./repos:/srv/git/:ro
+    environment:
+      - CGIT_TITLE=CGit
+      - CGIT_DESC=The hyperfast web frontend for Git repositories
+      # - BASIC_AUTH_USER=admin
+      # - BASIC_AUTH_PASS=12345678
