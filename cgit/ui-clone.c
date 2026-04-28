@@ -11,6 +11,7 @@
 
 #include "cgit.h"
 #include "ui-clone.h"
+#include "ui-lfs.h"
 #include "html.h"
 #include "ui-shared.h"
 #include "packfile.h"
@@ -80,6 +81,11 @@ static void send_file(const char *path)
 
 void cgit_clone_info(void)
 {
+	if (ctx.qry.path && !strncmp(ctx.qry.path, "lfs/", 4)) {
+		cgit_lfs_handle();
+		return;
+	}
+
 	if (!ctx.qry.path || strcmp(ctx.qry.path, "refs")) {
 		cgit_print_error_page(400, "Bad request", "Bad request");
 		return;
