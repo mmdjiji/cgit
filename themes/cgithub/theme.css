@@ -1019,8 +1019,7 @@ div#cgit table.bin-blob {
 }
 
 div#cgit table.blob {
-    display: block;
-    overflow: scroll;
+    overflow-x: auto;
 }
 
 div#cgit table.blob td.linenumbers {
@@ -1044,7 +1043,23 @@ div#cgit table.ssdiff td.lineno a:hover {
 div#cgit table.blob td.hashes,
 div#cgit table.blob td.linenumbers,
 div#cgit table.blob td.lines {
-    padding: var(--inner-pad) 0;
+    padding: 0;
+    vertical-align: top;
+}
+
+div#cgit table.blob td.lines pre,
+div#cgit table.blob td.linenumbers pre {
+    margin: 0;
+}
+
+div#cgit table.blob td.lines > pre > code {
+    display: block;
+}
+
+div#cgit table.blob td.lines .highlight,
+div#cgit table.blob td.lines .highlight pre {
+    margin: 0;
+    padding: 0;
 }
 
 div#cgit table.blame > tbody {

@@ -43,7 +43,7 @@
         if (typeof hljs === "undefined") return;
         var blob = document.querySelector("div#cgit table.blob td.lines pre code");
         var path = document.querySelector("div#cgit div.path a:last-child");
-        if (blob && path) {
+        if (blob && path && !blob.querySelector("style")) {
             blob.classList.add("language-" + path.textContent.split(".").pop());
             hljs.highlightElement(blob);
         }
