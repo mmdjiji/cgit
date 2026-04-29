@@ -10,5 +10,6 @@ services:
     environment:
       - CGIT_TITLE=CGit
       - CGIT_DESC=The hyperfast web frontend for Git repositories
+      # - CGIT_THEME=cgithub-auto
       # - BASIC_AUTH_USER=admin
       # - BASIC_AUTH_PASS=12345678

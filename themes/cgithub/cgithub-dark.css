@@ -1,0 +1,24 @@
+:root:root {
+    color-scheme: dark;
+    --bg-color: #0d1117;
+    --text-color: #f0f6fc;
+    --light-text-color: #9198a1;
+    --menu-highlight-color: #f78166;
+    --link-color: #4493f8;
+    --header-color: #ffffff;
+    --header-bg-color: #25292e;
+    --light-bg-color: #151b23;
+    --lighter-bg-color: #1e242a;
+    --darker-bg-color: #212830;
+    --border-color: #3d444d;
+    --hunk-bg-color: #121d2f;
+    --hunk-border-color: #0c2d6b;
+    --add-bg-color: #12261e;
+    --add-border-color: #1d572d;
+    --add-text-color: #238636;
+    --del-bg-color: #25171c;
+    --del-border-color: #792e2e;
+    --del-text-color: #da3633;
+    --change-bg-color: #272115;
+    --change-border-color: #624711;
+}

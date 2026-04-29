@@ -53,6 +53,18 @@ CGit Docker image can be configured via environment variables. This is the defau
 - `CGIT_VROOT`: Virtual root directory.
 - `CGIT_SECTION_FROM_STARTPATH`: How many path elements from each repo path to use as a default section name.
 - `CGIT_MAX_REPO_COUNT`: Number of entries to list per page on the repository index page. Default: `50`.
+- `CGIT_THEME`: Default visual theme. Default: `default`.
+
+#### Available Themes
+
+Users can also switch themes at runtime via a dropdown in the page header; their choice is saved in the browser.
+
+| Value | Description |
+|-------|-------------|
+| `default` | Classic CGit appearance |
+| `cgithub-auto` | GitHub-inspired theme, follows OS light/dark preference |
+| `cgithub-light` | GitHub-inspired theme, always light |
+| `cgithub-dark` | GitHub-inspired theme, always dark |
 
 ### Basic Authentication
 

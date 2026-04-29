@@ -26,6 +26,7 @@ if [ "$1" = "nginx" ] || [ "${1#-}" != "$1" ]; then
     # Replace environment variables only if `USE_CUSTOM_CONFIG` is not defined or equal to `false`
     if [[ -z "$USE_CUSTOM_CONFIG" ]] || [[ "$USE_CUSTOM_CONFIG" = "false" ]]; then
         envsubst < /tmp/cgitrc.tmpl > /etc/cgitrc
+        envsubst '${CGIT_THEME}' < /tmp/head-include.tmpl > /usr/share/webapps/cgit/head-include.html
     fi
 
     spawn-fcgi \

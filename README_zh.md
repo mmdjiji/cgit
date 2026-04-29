@@ -57,6 +57,18 @@ FROM docker.cnb.cool/mmdjiji/cgit:latest
 | `CGIT_VROOT` | 虚拟根目录 | `/` |
 | `CGIT_SECTION_FROM_STARTPATH` | 从仓库路径中提取多少级目录作为分区名 | `0` |
 | `CGIT_MAX_REPO_COUNT` | 仓库索引页每页显示的条目数 | `50` |
+| `CGIT_THEME` | 默认视觉主题 | `default` |
+
+#### 可用主题
+
+用户也可通过页面头部的下拉菜单在运行时切换主题，选择将保存在浏览器中。
+
+| 值 | 说明 |
+|------|------|
+| `default` | 经典 CGit 外观 |
+| `cgithub-auto` | GitHub 风格主题，跟随系统明暗模式 |
+| `cgithub-light` | GitHub 风格主题，始终浅色 |
+| `cgithub-dark` | GitHub 风格主题，始终深色 |
 
 ### HTTP Basic 认证
 

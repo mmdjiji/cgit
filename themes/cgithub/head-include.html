@@ -1,0 +1,98 @@
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<script>
+"use strict";
+(function() {
+    var THEMES = ["default", "cgithub-auto", "cgithub-light", "cgithub-dark"];
+    var BASE = "/themes/cgithub/";
+    var VER = "?v=3";
+    var serverDefault = "${CGIT_THEME}";
+    if (THEMES.indexOf(serverDefault) === -1) serverDefault = "default";
+
+    var saved = null;
+    try { saved = localStorage.getItem("cgit-theme"); } catch(e) {}
+    var theme = (saved && THEMES.indexOf(saved) !== -1) ? saved : serverDefault;
+
+    if (theme !== "default") {
+        var defLink = document.querySelector("link[href$='cgit.css']");
+        if (defLink) defLink.disabled = true;
+
+        document.write('<link rel="stylesheet" href="' + BASE + 'theme.css' + VER + '"/>');
+        if (theme === "cgithub-light") {
+            document.write('<link rel="stylesheet" href="' + BASE + 'cgithub-light.css' + VER + '"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github.min.css' + VER + '"/>');
+        } else if (theme === "cgithub-dark") {
+            document.write('<link rel="stylesheet" href="' + BASE + 'cgithub-dark.css' + VER + '"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github-dark.min.css' + VER + '"/>');
+        } else {
+            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github.min.css' + VER + '" media="(prefers-color-scheme: light)"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github-dark.min.css' + VER + '" media="(prefers-color-scheme: dark)"/>');
+        }
+    }
+
+    window.__cgitTheme = theme;
+    window.__cgitThemes = THEMES;
+})();
+</script>
+<script>
+"use strict";
+(function() {
+    var theme = window.__cgitTheme;
+    var THEMES = window.__cgitThemes;
+    var BASE = "/themes/cgithub/";
+    var VER = "?v=3";
+
+    function hlBlob() {
+        if (typeof hljs === "undefined") return;
+        var blob = document.querySelector("div#cgit table.blob td.lines pre code");
+        var path = document.querySelector("div#cgit div.path a:last-child");
+        if (blob && path) {
+            blob.classList.add("language-" + path.textContent.split(".").pop());
+            hljs.highlightElement(blob);
+        }
+    }
+
+    function loadHljs() {
+        if (document.querySelector("script[src*='highlight.min.js']")) return;
+        var s = document.createElement("script");
+        s.src = BASE + "highlight/highlight.min.js" + VER;
+        s.onload = hlBlob;
+        s.defer = true;
+        document.head.appendChild(s);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if (theme.indexOf("cgithub") === 0) loadHljs();
+
+        var formCell = document.querySelector("table#header td.form");
+        if (!formCell) {
+            var headerRow = document.querySelector("table#header tr");
+            if (!headerRow) return;
+            formCell = document.createElement("td");
+            formCell.className = "form";
+            formCell.style.textAlign = "right";
+            formCell.style.verticalAlign = "bottom";
+            formCell.style.whiteSpace = "nowrap";
+            formCell.style.paddingRight = "28px";
+            headerRow.appendChild(formCell);
+        }
+
+        var select = document.createElement("select");
+        select.id = "cgit-theme-select";
+
+        for (var i = 0; i < THEMES.length; i++) {
+            var o = document.createElement("option");
+            o.value = THEMES[i];
+            o.textContent = THEMES[i];
+            if (THEMES[i] === theme) o.selected = true;
+            select.appendChild(o);
+        }
+
+        select.addEventListener("change", function() {
+            try { localStorage.setItem("cgit-theme", this.value); } catch(e) {}
+            location.reload();
+        });
+
+        formCell.appendChild(select);
+    });
+})();
+</script>

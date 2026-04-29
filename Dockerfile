@@ -41,12 +41,14 @@ ENV CGIT_DESC="The hyperfast web frontend for Git repositories"
 ENV CGIT_VROOT="/"
 ENV CGIT_SECTION_FROM_STARTPATH=0
 ENV CGIT_MAX_REPO_COUNT=50
+ENV CGIT_THEME="default"
 
 LABEL version="${VERSION}" \
     description="The hyperfast web frontend for Git repositories"
 
 COPY --from=builder /usr/share/webapps/cgit /usr/share/webapps/cgit
 COPY --from=builder /usr/lib/cgit/filters /usr/lib/cgit/filters
+COPY themes/ /usr/share/webapps/cgit/themes/
 
 RUN set -eux \
     && apk add --no-cache \
@@ -69,7 +71,17 @@ RUN set -eux \
     && rm -rf /var/cache/apk/* \
     && rm -rf /tmp/*
 
+RUN set -eux \
+    && mkdir -p /usr/share/webapps/cgit/themes/cgithub/highlight \
+    && wget -qO /usr/share/webapps/cgit/themes/cgithub/highlight/highlight.min.js \
+        "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" \
+    && wget -qO /usr/share/webapps/cgit/themes/cgithub/highlight/github.min.css \
+        "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css" \
+    && wget -qO /usr/share/webapps/cgit/themes/cgithub/highlight/github-dark.min.css \
+        "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css"
+
 COPY cgit.conf /tmp/cgitrc.tmpl
+COPY themes/cgithub/head-include.html /tmp/head-include.tmpl
 COPY docker-entrypoint.sh /
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
