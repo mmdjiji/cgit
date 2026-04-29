@@ -107,6 +107,7 @@ div#cgit div.content h2,
 div#cgit ul.pager,
 div#cgit div.error,
 div#cgit div.markdown-body,
+div#cgit div#summary,
 div#cgit table.stats {
     width: 100%;
     max-width: 1280px;
