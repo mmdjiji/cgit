@@ -40,7 +40,7 @@ ENV CGIT_TITLE="CGit"
 ENV CGIT_DESC="The hyperfast web frontend for Git repositories"
 ENV CGIT_VROOT="/"
 ENV CGIT_SECTION_FROM_STARTPATH=0
-ENV CGIT_MAX_REPO_COUNT=10000
+ENV CGIT_MAX_REPO_COUNT=50
 
 LABEL version="${VERSION}" \
     description="The hyperfast web frontend for Git repositories"

@@ -52,7 +52,7 @@ CGit Docker image can be configured via environment variables. This is the defau
 - `CGIT_DESC`: Website description.
 - `CGIT_VROOT`: Virtual root directory.
 - `CGIT_SECTION_FROM_STARTPATH`: How many path elements from each repo path to use as a default section name.
-- `CGIT_MAX_REPO_COUNT`: Number of entries to list per page on the repository index page.
+- `CGIT_MAX_REPO_COUNT`: Number of entries to list per page on the repository index page. Default: `50`.
 
 ### Basic Authentication
 

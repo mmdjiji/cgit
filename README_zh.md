@@ -56,7 +56,7 @@ FROM docker.cnb.cool/mmdjiji/cgit:latest
 | `CGIT_DESC` | 网站描述 | `The hyperfast web frontend for Git repositories` |
 | `CGIT_VROOT` | 虚拟根目录 | `/` |
 | `CGIT_SECTION_FROM_STARTPATH` | 从仓库路径中提取多少级目录作为分区名 | `0` |
-| `CGIT_MAX_REPO_COUNT` | 仓库索引页每页显示的条目数 | `10000` |
+| `CGIT_MAX_REPO_COUNT` | 仓库索引页每页显示的条目数 | `50` |
 
 ### HTTP Basic 认证
 
