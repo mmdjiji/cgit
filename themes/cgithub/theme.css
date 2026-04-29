@@ -1153,7 +1153,6 @@ div#cgit div.content div.markdown-body hr {
 div#cgit div.content div.markdown-body img,
 div#cgit div.content div.markdown-body video {
     border: none;
-    display: block;
     max-width: 100%;
 }
 

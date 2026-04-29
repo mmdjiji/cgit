@@ -4,7 +4,6 @@
 (function() {
     var THEMES = ["default", "cgithub-auto", "cgithub-light", "cgithub-dark"];
     var BASE = "/themes/cgithub/";
-    var VER = "?v=6";
     var serverDefault = "${CGIT_THEME}";
     if (THEMES.indexOf(serverDefault) === -1) serverDefault = "default";
 
@@ -16,16 +15,16 @@
         var defLink = document.querySelector("link[href$='cgit.css']");
         if (defLink) defLink.disabled = true;
 
-        document.write('<link rel="stylesheet" href="' + BASE + 'theme.css' + VER + '"/>');
+        document.write('<link rel="stylesheet" href="' + BASE + 'theme.css"/>');
         if (theme === "cgithub-light") {
-            document.write('<link rel="stylesheet" href="' + BASE + 'cgithub-light.css' + VER + '"/>');
-            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github.min.css' + VER + '"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'cgithub-light.css"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github.min.css"/>');
         } else if (theme === "cgithub-dark") {
-            document.write('<link rel="stylesheet" href="' + BASE + 'cgithub-dark.css' + VER + '"/>');
-            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github-dark.min.css' + VER + '"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'cgithub-dark.css"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github-dark.min.css"/>');
         } else {
-            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github.min.css' + VER + '" media="(prefers-color-scheme: light)"/>');
-            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github-dark.min.css' + VER + '" media="(prefers-color-scheme: dark)"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github.min.css" media="(prefers-color-scheme: light)"/>');
+            document.write('<link rel="stylesheet" href="' + BASE + 'highlight/github-dark.min.css" media="(prefers-color-scheme: dark)"/>');
         }
     }
 
@@ -39,7 +38,6 @@
     var theme = window.__cgitTheme;
     var THEMES = window.__cgitThemes;
     var BASE = "/themes/cgithub/";
-    var VER = "?v=6";
 
     function hlBlob() {
         if (typeof hljs === "undefined") return;
@@ -54,7 +52,7 @@
     function loadHljs() {
         if (document.querySelector("script[src*='highlight.min.js']")) return;
         var s = document.createElement("script");
-        s.src = BASE + "highlight/highlight.min.js" + VER;
+        s.src = BASE + "highlight/highlight.min.js";
         s.onload = hlBlob;
         s.defer = true;
         document.head.appendChild(s);
@@ -62,6 +60,15 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         if (theme.indexOf("cgithub") === 0) loadHljs();
+
+        // Redirect repo links on index page to /about/
+        var repoLinks = document.querySelectorAll("table.list td.toplevel-repo a, table.list td.sublevel-repo a");
+        for (var i = 0; i < repoLinks.length; i++) {
+            var href = repoLinks[i].getAttribute("href");
+            if (href && href.charAt(href.length - 1) === "/") {
+                repoLinks[i].setAttribute("href", href + "about/");
+            }
+        }
 
         var formCell = document.querySelector("table#header td.form");
         if (!formCell) {
