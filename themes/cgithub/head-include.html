@@ -4,7 +4,7 @@
 (function() {
     var THEMES = ["default", "cgithub-auto", "cgithub-light", "cgithub-dark"];
     var BASE = "/themes/cgithub/";
-    var VER = "?v=3";
+    var VER = "?v=6";
     var serverDefault = "${CGIT_THEME}";
     if (THEMES.indexOf(serverDefault) === -1) serverDefault = "default";
 
@@ -39,7 +39,7 @@
     var theme = window.__cgitTheme;
     var THEMES = window.__cgitThemes;
     var BASE = "/themes/cgithub/";
-    var VER = "?v=3";
+    var VER = "?v=6";
 
     function hlBlob() {
         if (typeof hljs === "undefined") return;
@@ -69,10 +69,6 @@
             if (!headerRow) return;
             formCell = document.createElement("td");
             formCell.className = "form";
-            formCell.style.textAlign = "right";
-            formCell.style.verticalAlign = "bottom";
-            formCell.style.whiteSpace = "nowrap";
-            formCell.style.paddingRight = "28px";
             headerRow.appendChild(formCell);
         }
 

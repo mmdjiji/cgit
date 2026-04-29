@@ -189,18 +189,6 @@ div#cgit div.error {
     }
 }
 
-@media (min-width: 1336px) {
-    div#cgit table#header td.logo,
-    div#cgit table.tabs > tr > td:first-child,
-    div#cgit table.tabs > tbody > tr > td:first-child {
-        padding-left: calc(50vw - 640px);
-    }
-    div#cgit table#header tr td:last-child,
-    div#cgit table.tabs td.form {
-        padding-right: calc(50vw - 640px);
-    }
-}
-
 /* header */
 
 div#cgit table#header {
@@ -236,6 +224,7 @@ div#cgit table.tabs td {
 
 div#cgit table.tabs td.form {
     padding: 0 var(--content-h-margin) 0 0;
+    text-align: right;
 }
 
 div#cgit table#header td {
@@ -247,11 +236,19 @@ div#cgit table#header td.main {
 }
 
 div#cgit table#header td,
-div#cgit table#header td.logo,
-div#cgit table#header td.form,
-div#cgit table#header td.sub.right {
+div#cgit table#header td.logo {
     padding: 3px var(--content-h-margin);
     vertical-align: middle;
+}
+
+div#cgit table#header td.form {
+    padding: 3px var(--content-h-margin);
+    vertical-align: middle;
+    text-align: right;
+}
+
+div#cgit table#header td.sub.right {
+    display: none;
 }
 
 div#cgit table#header td.main,
@@ -329,6 +326,18 @@ div#cgit table.tabs td a:hover {
     text-decoration: none;
     background-color: var(--darker-bg-color);
     transition: background-color .12s ease-out
+}
+
+@media (min-width: 1336px) {
+    div#cgit table#header td.logo,
+    div#cgit table.tabs > tr > td:first-child,
+    div#cgit table.tabs > tbody > tr > td:first-child {
+        padding-left: calc(50vw - 640px);
+    }
+    div#cgit table#header tr td:last-child,
+    div#cgit table.tabs td.form {
+        padding-right: calc(50vw - 640px);
+    }
 }
 
 /* inputs */
