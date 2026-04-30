@@ -23,6 +23,7 @@ The hyperfast web frontend for [Git](https://git-scm.com/) repositories on top o
 - Has an extensive filtering framework using scripts or a built-in Lua interpreter.
 - Optional HTTP Basic Auth support.
 - Git LFS online preview support.
+- Rich theme support.
 
 ## Usage
 
