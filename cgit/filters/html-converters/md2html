@@ -2,8 +2,51 @@
 import markdown
 import sys
 import io
+import re
+import xml.etree.ElementTree as etree
 from pygments.formatters import HtmlFormatter
 from markdown.extensions.toc import TocExtension
+from markdown.treeprocessors import Treeprocessor
+from markdown.extensions import Extension
+
+
+class ChecklistTreeprocessor(Treeprocessor):
+    RE_CHECKED = re.compile(r'^\[x\]\s+', re.IGNORECASE)
+    RE_UNCHECKED = re.compile(r'^\[\s\]\s+')
+
+    def run(self, root):
+        for ul in root.iter('ul'):
+            has_task = False
+            for li in ul:
+                if li.tag != 'li':
+                    continue
+                text = li.text or ''
+                if self.RE_CHECKED.match(text):
+                    has_task = True
+                    li.text = self.RE_CHECKED.sub('', text)
+                    cb = etree.Element('input')
+                    cb.set('type', 'checkbox')
+                    cb.set('checked', 'checked')
+                    cb.set('disabled', 'disabled')
+                    li.insert(0, cb)
+                    cb.tail = ' ' + (li.text or '')
+                    li.text = ''
+                elif self.RE_UNCHECKED.match(text):
+                    has_task = True
+                    li.text = self.RE_UNCHECKED.sub('', text)
+                    cb = etree.Element('input')
+                    cb.set('type', 'checkbox')
+                    cb.set('disabled', 'disabled')
+                    li.insert(0, cb)
+                    cb.tail = ' ' + (li.text or '')
+                    li.text = ''
+            if has_task:
+                ul.set('class', (ul.get('class', '') + ' task-list').strip())
+
+
+class ChecklistExtension(Extension):
+    def extendMarkdown(self, md):
+        md.treeprocessors.register(ChecklistTreeprocessor(md), 'checklist', 25)
 sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stdout.write('''
@@ -283,6 +326,14 @@ div#cgit .markdown-body h1 a.toclink, div#cgit .markdown-body h2 a.toclink, div#
     background-color: transparent;
     border: none;
 }
+.markdown-body ul.task-list {
+    list-style-type: none;
+    padding-left: 1.5em;
+}
+.markdown-body ul.task-list input[type="checkbox"] {
+    margin-right: 0.25em;
+    vertical-align: middle;
+}
 ''')
 sys.stdout.write(HtmlFormatter(style='pastie').get_style_defs('.highlight'))
 sys.stdout.write('''
@@ -298,7 +349,8 @@ markdown.markdownFromFile(
 		"markdown.extensions.codehilite",
 		"markdown.extensions.tables",
 		"markdown.extensions.sane_lists",
-		TocExtension(anchorlink=True)],
+		TocExtension(anchorlink=True),
+		ChecklistExtension()],
 	extension_configs={
 		"markdown.extensions.codehilite":{"css_class":"highlight"}})
 sys.stdout.write("</div>")
