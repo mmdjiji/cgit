@@ -334,6 +334,15 @@ div#cgit .markdown-body h1 a.toclink, div#cgit .markdown-body h2 a.toclink, div#
     margin-right: 0.25em;
     vertical-align: middle;
 }
+.markdown-body summary > p,
+.markdown-body summary > h1,
+.markdown-body summary > h2,
+.markdown-body summary > h3,
+.markdown-body summary > h4,
+.markdown-body summary > h5,
+.markdown-body summary > h6 {
+    display: inline;
+}
 ''')
 sys.stdout.write(HtmlFormatter(style='pastie').get_style_defs('.highlight'))
 sys.stdout.write('''
@@ -349,6 +358,7 @@ markdown.markdownFromFile(
 		"markdown.extensions.codehilite",
 		"markdown.extensions.tables",
 		"markdown.extensions.sane_lists",
+		"markdown.extensions.md_in_html",
 		TocExtension(anchorlink=True),
 		ChecklistExtension()],
 	extension_configs={
