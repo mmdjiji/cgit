@@ -339,6 +339,11 @@ div#cgit table.tabs td a:hover {
     div#cgit table.tabs td.form {
         padding-right: calc(50vw - 640px);
     }
+    div#cgit div.content:has(table.blob),
+    div#cgit div.content:has(table.bin-blob) {
+        margin-left: calc(50vw - 640px);
+        margin-right: calc(50vw - 640px);
+    }
 }
 
 /* inputs */
