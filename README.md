@@ -82,6 +82,23 @@ This applies to both the web interface and git clone over HTTP:
 git clone https://admin:12345678@your-host/repo-name
 ```
 
+## Custom logo and favicon
+
+You can replace the default logo and favicon by mounting your own image files into the container:
+
+```yaml
+volumes:
+  - ./logo.png:/usr/share/webapps/cgit/cgit.png:ro
+  - ./logo.ico:/usr/share/webapps/cgit/favicon.ico:ro
+```
+
+| Mount target | Description |
+|---|---|
+| `/usr/share/webapps/cgit/cgit.png` | Site logo displayed in the page header |
+| `/usr/share/webapps/cgit/favicon.ico` | Browser tab favicon |
+
+> **Tip:** For best results, use a square image. The favicon is typically displayed at 16x16 or 32x32 pixels — converting to `.ico` format is recommended for maximum browser compatibility.
+
 ## Settings via custom configuration file
 
 By default, this Docker image will use a template file located at [cgit.conf](./cgit.conf) which is replaced with the env settings (mentioned above) at start-up time.

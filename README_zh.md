@@ -88,6 +88,23 @@ FROM docker.cnb.cool/mmdjiji/cgit:latest
 git clone https://admin:12345678@your-host/repo-name
 ```
 
+## 自定义 Logo 和 Favicon
+
+通过挂载文件即可替换默认的 Logo 和 Favicon：
+
+```yaml
+volumes:
+  - ./logo.png:/usr/share/webapps/cgit/cgit.png:ro
+  - ./logo.ico:/usr/share/webapps/cgit/favicon.ico:ro
+```
+
+| 挂载目标 | 说明 |
+|---|---|
+| `/usr/share/webapps/cgit/cgit.png` | 页面头部显示的网站 Logo |
+| `/usr/share/webapps/cgit/favicon.ico` | 浏览器标签页图标 |
+
+> **提示：** 建议使用正方形图片。Favicon 通常以 16x16 或 32x32 像素显示，为获得最佳浏览器兼容性，建议将图片转换为 `.ico` 格式。
+
 ## 自定义配置文件
 
 默认情况下，镜像使用 [cgit.conf](./cgit.conf) 模板文件，启动时替换上述环境变量。
