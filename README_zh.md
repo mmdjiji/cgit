@@ -2,6 +2,8 @@
 
 > 本项目是 [alpine-cgit](https://github.com/joseluisq/alpine-cgit) 的分支，后续将独立维护。主仓库托管在 [cnb.cool/mmdjiji/cgit](https://cnb.cool/mmdjiji/cgit)，请在该平台提交 Issue 和 Pull Request。GitHub 仅为只读镜像。
 
+[English](./README.md) | **简体中文**
+
 基于 [Alpine](https://alpinelinux.org/) 和 [Nginx](https://nginx.org/) 的超快 [Git](https://git-scm.com/) 仓库 Web 前端。[CGit](https://git.zx2c4.com/cgit/about/) 是一个用 C 编写的 Git 仓库 Web 界面（[CGI](https://tools.ietf.org/html/rfc3875)）。
 
 <img src="./cgit.png" width="600">
