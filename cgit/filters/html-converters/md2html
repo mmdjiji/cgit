@@ -2,12 +2,39 @@
 import markdown
 import sys
 import io
+import os
 import re
 import xml.etree.ElementTree as etree
 from pygments.formatters import HtmlFormatter
 from markdown.extensions.toc import TocExtension
 from markdown.treeprocessors import Treeprocessor
 from markdown.extensions import Extension
+
+
+class LinkRewriteTreeprocessor(Treeprocessor):
+    """Rewrite repo-root-relative links (/path) to cgit about/plain URLs."""
+
+    def __init__(self, md):
+        super().__init__(md)
+        vroot = os.environ.get('CGIT_VROOT', '/')
+        repo_url = os.environ.get('CGIT_REPO_URL', '')
+        self.base = vroot.rstrip('/') + '/' + repo_url.strip('/')
+
+    def run(self, root):
+        for element in root.iter():
+            if element.tag == 'a':
+                href = element.get('href', '')
+                if href.startswith('/') and not href.startswith('//'):
+                    element.set('href', self.base + '/about' + href)
+            elif element.tag == 'img':
+                src = element.get('src', '')
+                if src.startswith('/') and not src.startswith('//'):
+                    element.set('src', self.base + '/plain' + src)
+
+
+class LinkRewriteExtension(Extension):
+    def extendMarkdown(self, md):
+        md.treeprocessors.register(LinkRewriteTreeprocessor(md), 'linkrewrite', 15)
 
 
 class ChecklistTreeprocessor(Treeprocessor):
@@ -360,7 +387,8 @@ markdown.markdownFromFile(
 		"markdown.extensions.sane_lists",
 		"markdown.extensions.md_in_html",
 		TocExtension(anchorlink=True),
-		ChecklistExtension()],
+		ChecklistExtension(),
+		LinkRewriteExtension()],
 	extension_configs={
 		"markdown.extensions.codehilite":{"css_class":"highlight"}})
 sys.stdout.write("</div>")
