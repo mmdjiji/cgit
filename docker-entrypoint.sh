@@ -27,6 +27,11 @@ if [ "$1" = "nginx" ] || [ "${1#-}" != "$1" ]; then
     if [[ -z "$USE_CUSTOM_CONFIG" ]] || [[ "$USE_CUSTOM_CONFIG" = "false" ]]; then
         envsubst < /tmp/cgitrc.tmpl > /etc/cgitrc
         envsubst '${CGIT_THEME}' < /tmp/head-include.tmpl > /usr/share/webapps/cgit/head-include.html
+
+        # Enable gravatar if requested
+        if [[ "$ENABLE_GRAVATAR" = "1" ]] || [[ "$ENABLE_GRAVATAR" = "true" ]]; then
+            echo "email-filter=exec:/usr/lib/cgit/filters/email-gravatar.py" >> /etc/cgitrc
+        fi
     fi
 
     spawn-fcgi \
