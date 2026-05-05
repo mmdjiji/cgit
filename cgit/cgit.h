@@ -111,6 +111,7 @@ struct cgit_repo {
 	int branch_sort;
 	int commit_sort;
 	time_t mtime;
+	off_t disk_size;	/* Total repo size on disk (bytes), -1 = unset */
 	struct cgit_filter *about_filter;
 	struct cgit_filter *commit_filter;
 	struct cgit_filter *source_filter;
@@ -237,6 +238,7 @@ struct cgit_config {
 	int enable_http_clone;
 	int enable_index_links;
 	int enable_index_owner;
+	int enable_index_size;
 	int enable_blame;
 	int enable_commit_graph;
 	int enable_log_filecount;

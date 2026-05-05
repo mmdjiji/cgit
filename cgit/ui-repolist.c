@@ -10,6 +10,66 @@
 #include "ui-repolist.h"
 #include "html.h"
 #include "ui-shared.h"
+#include <dirent.h>
+#include <sys/stat.h>
+
+static off_t calc_dir_size(const char *path)
+{
+	DIR *dir;
+	struct dirent *ent;
+	struct stat st;
+	struct strbuf buf = STRBUF_INIT;
+	off_t size = 0;
+
+	dir = opendir(path);
+	if (!dir)
+		return 0;
+
+	while ((ent = readdir(dir)) != NULL) {
+		if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
+			continue;
+		strbuf_reset(&buf);
+		strbuf_addf(&buf, "%s/%s", path, ent->d_name);
+		if (lstat(buf.buf, &st))
+			continue;
+		if (S_ISDIR(st.st_mode))
+			size += calc_dir_size(buf.buf);
+		else
+			size += st.st_size;
+	}
+	closedir(dir);
+	strbuf_release(&buf);
+	return size;
+}
+
+static off_t get_repo_size(const struct cgit_repo *repo)
+{
+	struct cgit_repo *r = (struct cgit_repo *)repo;
+
+	if (repo->disk_size != -1)
+		return repo->disk_size;
+	r->disk_size = calc_dir_size(repo->path);
+	return r->disk_size;
+}
+
+static void print_size(const struct cgit_repo *repo)
+{
+	off_t size = get_repo_size(repo);
+	double val;
+
+	if (size < 1024)
+		htmlf("%lld B", (long long)size);
+	else if (size < 1024 * 1024) {
+		val = size / 1024.0;
+		htmlf("%.1f KiB", val);
+	} else if (size < (off_t)1024 * 1024 * 1024) {
+		val = size / (1024.0 * 1024.0);
+		htmlf("%.1f MiB", val);
+	} else {
+		val = size / (1024.0 * 1024.0 * 1024.0);
+		htmlf("%.1f GiB", val);
+	}
+}
 
 static time_t read_agefile(const char *path)
 {
@@ -148,6 +208,8 @@ static void print_header(void)
 	if (ctx.cfg.enable_index_owner)
 		print_sort_header("Owner", "owner");
 	print_sort_header("Idle", "idle");
+	if (ctx.cfg.enable_index_size)
+		print_sort_header("Size", "size");
 	if (ctx.cfg.enable_index_links)
 		html("<th class='left'>Links</th>");
 	html("</tr>\n");
@@ -220,6 +282,21 @@ static int sort_idle(const void *a, const void *b)
 	return t2 - t1;
 }
 
+static int sort_size(const void *a, const void *b)
+{
+	const struct cgit_repo *r1 = a;
+	const struct cgit_repo *r2 = b;
+	off_t s1, s2;
+
+	s1 = get_repo_size(r1);
+	s2 = get_repo_size(r2);
+	if (s2 > s1)
+		return 1;
+	if (s2 < s1)
+		return -1;
+	return 0;
+}
+
 static int sort_section(const void *a, const void *b)
 {
 	const struct cgit_repo *r1 = a;
@@ -247,6 +324,7 @@ static const struct sortcolumn sortcolumn[] = {
 	{"desc", sort_desc},
 	{"owner", sort_owner},
 	{"idle", sort_idle},
+	{"size", sort_size},
 	{NULL, NULL}
 };
 
@@ -281,6 +359,8 @@ void cgit_print_repolist(void)
 	if (ctx.cfg.enable_index_links)
 		++columns;
 	if (ctx.cfg.enable_index_owner)
+		++columns;
+	if (ctx.cfg.enable_index_size)
 		++columns;
 
 	ctx.page.title = ctx.cfg.root_title;
@@ -350,6 +430,11 @@ void cgit_print_repolist(void)
 		}
 		print_modtime(ctx.repo);
 		html("</td>");
+		if (ctx.cfg.enable_index_size) {
+			html("<td>");
+			print_size(ctx.repo);
+			html("</td>");
+		}
 		if (ctx.cfg.enable_index_links) {
 			html("<td>");
 			cgit_summary_link("summary", NULL, "button", NULL);
